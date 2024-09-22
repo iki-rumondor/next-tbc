@@ -3,6 +3,7 @@ import Input from "@/components/Forms/Input";
 import LayoutForm from "@/components/Forms/Layout";
 import BackArrowIcon from "@/components/Icons/BackArrowIcon";
 import DeleteIcon from "@/components/Icons/DeleteIcon";
+import Map from "@/components/Leaflet/Map";
 import Loader from "@/components/Loader";
 import DeleteModal from "@/components/Modal/DeleteModal";
 import get_data from "actions/get_data";
@@ -16,22 +17,33 @@ const defaultValue = {
   name: "",
 };
 
+interface Position {
+  lat: number;
+  lng: number;
+}
+
 export default function page({ params }: { params: { uuid: string } }) {
   const config = {
-    back_url: "../categories",
-    back_push: "/admin/master/categories",
-    default_api: `/categories/${params.uuid}`,
-    title_form: "Update Kategori UMKM",
+    back_url: "../health-centers",
+    back_push: "/admin/master/health-centers",
+    default_api: `/health-centers/${params.uuid}`,
+    title_form: "Update Data Puskesmas",
   };
 
   const [open, setOpen] = useState(false);
   const [isCheck, setIsCheck] = useState(false);
   const [values, setValues] = useState(defaultValue);
   const [isLoading, setIsLoading] = useState(false);
+  const [position, setPosition] = useState<Position | null>(null);
   const router = useRouter();
 
   const handleChange = (e: any) => {
     setValues({ ...values, [e.target.name]: e.target.value });
+  };
+
+  const mapProps = {
+    position,
+    setPosition,
   };
 
   const nameProps = {
@@ -42,12 +54,31 @@ export default function page({ params }: { params: { uuid: string } }) {
     value: values.name,
   };
 
+  const longProps = {
+    name: "longitude",
+    label: "Longitude",
+    noLabel: true,
+    disable: true,
+    type: "text",
+    value: position?.lng,
+  };
+
+  const latProps = {
+    name: "latitude",
+    label: "Latitude",
+    disable: true,
+    noLabel: true,
+    type: "text",
+    value: position?.lat,
+  };
+
   const handleLoad = async () => {
     const token = localStorage.getItem("token") || "";
     try {
       setIsLoading(true);
       const resp = await get_data(token, config.default_api);
-      resp.data && setValues(resp.data);
+      setValues({ name: resp.data.name });
+      setPosition({ lng: resp.data.longitude, lat: resp.data.latitude });
     } catch (error: any) {
       toast.error(error.message);
       router.push(config.back_push);
@@ -60,14 +91,14 @@ export default function page({ params }: { params: { uuid: string } }) {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const token = localStorage.getItem("token") || "";
+    const data = {
+      name: values.name,
+      longitude: position?.lng,
+      latitude: position?.lat,
+    };
     try {
       setIsLoading(true);
-      const response = await post_data(
-        token,
-        config.default_api,
-        "PUT",
-        values
-      );
+      const response = await post_data(token, config.default_api, "PUT", data);
       toast.success(response.message);
       router.push(config.back_push);
     } catch (error: any) {
@@ -92,7 +123,8 @@ export default function page({ params }: { params: { uuid: string } }) {
   };
 
   const deleteProps = {
-    title: "Setelah menghapus kategori tersebut, seluruh umkm dengan kategori tersebut akan dihapus juga",
+    title:
+      "Setelah menghapus kategori tersebut, seluruh umkm dengan kategori tersebut akan dihapus juga",
     toggleModal: () => setOpen(!open),
     handleSubmit: handleDelete,
     isLoading: isLoading,
@@ -134,6 +166,16 @@ export default function page({ params }: { params: { uuid: string } }) {
         title={config.title_form}
       >
         <Input props={nameProps} />
+        <div className="w-full mb-5">
+          <div className="mb-3 block text-sm font-medium text-black dark:text-white">
+            Pilih Lokasi
+          </div>
+          <Map props={mapProps} />
+        </div>
+        <div className="grid md:grid-cols-2 md:gap-2">
+          <Input props={longProps} />
+          <Input props={latProps} />
+        </div>
       </LayoutForm>
 
       {open && <DeleteModal props={deleteProps} />}

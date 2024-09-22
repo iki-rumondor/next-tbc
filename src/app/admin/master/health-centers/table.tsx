@@ -1,11 +1,11 @@
 import EyeIcon from "@/components/Icons/EyeIcon";
-import { Category } from "@/types/category";
+import { HealthCenter } from "@/types/health_center";
 import moment from "moment";
 import Link from "next/link";
 import React from "react";
 
 interface TableProps {
-  data: Category[];
+  data: HealthCenter[];
 }
 
 const MainTable: React.FC<TableProps> = ({ data }) => {
@@ -14,7 +14,7 @@ const MainTable: React.FC<TableProps> = ({ data }) => {
       <div className="max-w-full overflow-x-auto">
         <div className="border-b border-stroke pb-4 dark:border-strokedark mb-4">
           <h3 className="font-medium text-black dark:text-white">
-            Master Kategori UMKM
+            Master Data Puskesmas
           </h3>
         </div>
         {data.length > 0 && (
@@ -26,9 +26,6 @@ const MainTable: React.FC<TableProps> = ({ data }) => {
                 </th>
                 <th className=" px-4 py-4 font-medium text-black dark:text-white">
                   Waktu Ditambahkan
-                </th>
-                <th className=" px-4 py-4 font-medium text-black dark:text-white">
-                  Waktu Diubah
                 </th>
                 <th className="px-4 py-4 font-medium text-black dark:text-white">
                   Aksi
@@ -47,14 +44,9 @@ const MainTable: React.FC<TableProps> = ({ data }) => {
                     </p>
                   </td>
                   <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                    <p className="text-black dark:text-white">
-                      {moment.unix(item.updated_at / 1000).fromNow()}
-                    </p>
-                  </td>
-                  <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                     <div className="flex items-center space-x-3.5">
                       <Link
-                        href={`categories/${item.uuid}`}
+                        href={`health-centers/${item.uuid}`}
                         className="hover:text-primary"
                       >
                         <EyeIcon />

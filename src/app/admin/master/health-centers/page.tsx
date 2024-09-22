@@ -5,16 +5,16 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import MainTable from "./table";
-import { Category } from "@/types/category";
+import { HealthCenter } from "@/types/health_center";
 
 export default function page() {
   const config = {
-    api_load: "/categories",
-    url_add: "categories/add",
+    api_load: "/health-centers",
+    url_add: "health-centers/add",
   };
 
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState<Category[]>([]);
+  const [data, setData] = useState<HealthCenter[]>([]);
 
   const handleLoad = async () => {
     const token = localStorage.getItem("token") || "";

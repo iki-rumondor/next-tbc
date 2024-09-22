@@ -26,7 +26,7 @@ export default function LayoutForm({
             {children}
             <button
               disabled={isLoading}
-              className={`mt-6 flex w-full justify-center rounded ${
+              className={`flex w-full justify-center rounded ${
                 colorButton || "bg-primary"
               } p-3 font-medium text-gray hover:bg-opacity-90`}
             >

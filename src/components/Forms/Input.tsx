@@ -9,14 +9,17 @@ interface InputProps {
   value?: string | number;
   handleChange?: (e: any) => void;
   errorMessage?: string;
+  noLabel?: boolean;
 }
 
 export default function Input({ props }: { props: InputProps }) {
   return (
     <div className="mb-4.5">
-      <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-        {props.label}
-      </label>
+      {!props.noLabel && (
+        <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+          {props.label}
+        </label>
+      )}
       <div className="relative">
         <input
           required
