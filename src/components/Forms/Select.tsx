@@ -2,6 +2,7 @@ import React from "react";
 import DashboardIcon from "@/components/Icons/DashboardIcon";
 
 interface SelectProps {
+  disable?: boolean;
   label: string;
   options?: Array<{ name: string; value: any }>;
   value: string;
@@ -20,6 +21,7 @@ export default function Select({ props }: { props: SelectProps }) {
           <DashboardIcon />
         </span>
         <select
+          disabled={props.disable}
           onChange={props.handleChange}
           name={props.name}
           value={props.value}

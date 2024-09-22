@@ -1,11 +1,11 @@
 import EyeIcon from "@/components/Icons/EyeIcon";
-import { Guest } from "@/types/guest";
+import { Case } from "@/types/case";
 import moment from "moment";
 import Link from "next/link";
 import React from "react";
 
 interface TableProps {
-  data: Guest[];
+  data: Case[];
 }
 
 const MainTable: React.FC<TableProps> = ({ data }) => {
@@ -14,7 +14,7 @@ const MainTable: React.FC<TableProps> = ({ data }) => {
       <div className="max-w-full overflow-x-auto">
         <div className="border-b border-stroke pb-4 dark:border-strokedark mb-4">
           <h3 className="font-medium text-black dark:text-white">
-            Verifikasi Akun Pembeli
+            Master Data Kasus TBC
           </h3>
         </div>
         {data.length > 0 && (
@@ -22,13 +22,16 @@ const MainTable: React.FC<TableProps> = ({ data }) => {
             <thead>
               <tr className="bg-gray-2 text-left dark:bg-meta-4">
                 <th className=" px-4 py-4 font-medium text-black dark:text-white">
-                  Nama Lengkap
+                  Puskesmas
                 </th>
                 <th className=" px-4 py-4 font-medium text-black dark:text-white">
-                  Waktu Mendaftar
+                  Tahun
                 </th>
                 <th className=" px-4 py-4 font-medium text-black dark:text-white">
-                  Status
+                  Total Kasus
+                </th>
+                <th className=" px-4 py-4 font-medium text-black dark:text-white">
+                  Waktu Ditambahkan
                 </th>
                 <th className="px-4 py-4 font-medium text-black dark:text-white">
                   Aksi
@@ -39,7 +42,15 @@ const MainTable: React.FC<TableProps> = ({ data }) => {
               {data.map((item, key) => (
                 <tr key={key}>
                   <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                    <p className="text-black dark:text-white">{item.name}</p>
+                    <p className="text-black dark:text-white">
+                      {item.health_center.name}
+                    </p>
+                  </td>
+                  <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                    <p className="text-black dark:text-white">{item.year}</p>
+                  </td>
+                  <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                    <p className="text-black dark:text-white">{item.total}</p>
                   </td>
                   <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                     <p className="text-black dark:text-white">
@@ -47,18 +58,9 @@ const MainTable: React.FC<TableProps> = ({ data }) => {
                     </p>
                   </td>
                   <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                    <p
-                      className={`inline-block rounded px-2 py-1 text-sm font-medium text-white ${
-                        item.user.is_active ? "bg-success" : "bg-warning"
-                      }`}
-                    >
-                      {item.user.is_active ? "Aktif" : "Belum Aktif"}
-                    </p>
-                  </td>
-                  <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                     <div className="flex items-center space-x-3.5">
                       <Link
-                        href={`guests/${item.uuid}`}
+                        href={`cases/${item.uuid}`}
                         className="hover:text-primary"
                       >
                         <EyeIcon />

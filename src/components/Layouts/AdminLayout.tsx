@@ -21,6 +21,7 @@ const menuGroups = [
         route: "#",
         children: [
           { label: "Puskesmas", route: "/admin/master/health-centers" },
+          { label: "Kasus", route: "/admin/master/cases" },
         ],
       },
       {
