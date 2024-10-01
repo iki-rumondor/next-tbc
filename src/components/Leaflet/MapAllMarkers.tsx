@@ -1,25 +1,28 @@
 import React from "react";
 import { MapContainer, Marker, Popup, TileLayer, Tooltip } from "react-leaflet";
-import L from "leaflet";
+import L, { icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { HealthCenter } from "@/types/health_center";
+import { Result } from "@/types/result";
 
 interface Props {
-  healthCenters: HealthCenter[];
+  results: Result[];
   handleClick: (uuid: string) => void;
 }
 
 export default function MapAllMarkers({ props }: { props: Props }) {
-  const markerIcon = new L.Icon({
-    iconUrl:
-      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowUrl:
-      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-    shadowSize: [41, 41],
-  });
+  const getIcon = (cluster: number) => {
+    const iconNames = ["blue-mark.png", "yellow-mark.png", "red-mark.png"];
+    const markerIcon = new L.Icon({
+      iconUrl: `/icons/${iconNames[cluster]}`,
+      iconSize: [28, 42],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowUrl:
+        "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+      shadowSize: [41, 41],
+    });
+    return markerIcon;
+  };
 
   return (
     <div className="relative">
@@ -34,19 +37,22 @@ export default function MapAllMarkers({ props }: { props: Props }) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {props.healthCenters &&
-          props.healthCenters.map((item, idx) => (
+        {props.results &&
+          props.results?.map((item, idx) => (
             <button key={idx}>
               <Marker
-                position={[item.latitude, item.longitude]}
-                icon={markerIcon}
+                position={[
+                  item.case.health_center.latitude,
+                  item.case.health_center.longitude,
+                ]}
+                icon={getIcon(item.cluster)}
               >
                 <Popup>
                   <button onClick={() => props.handleClick(item.uuid)}>
                     Lihat Detail
                   </button>
                 </Popup>
-                <Tooltip>Puskesmas {item.name}</Tooltip>
+                <Tooltip>Puskesmas {item.case.health_center.name}</Tooltip>
               </Marker>
             </button>
           ))}
