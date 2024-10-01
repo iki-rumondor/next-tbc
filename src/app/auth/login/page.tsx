@@ -73,16 +73,6 @@ export default function page() {
           >
             {isLoading ? <SpinnerIcon /> : <span className="">Masuk</span>}
           </button>
-          <div className="text-center mt-2">
-            Belum punya akun? silahkan{" "}
-            <Link
-              href="/auth/signup"
-              className="text-primary hover:text-blue-800"
-            >
-              mendaftar
-            </Link>{" "}
-            terlebih dahulu
-          </div>
         </div>
       </form>
     </>

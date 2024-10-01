@@ -125,12 +125,15 @@ export default function Home() {
         <div className="relative flex-grow bg-homepage bg-no-repeat bg-cover bg-center h-full flex justify-center items-center text-white">
           <div className="absolute inset-0 bg-black opacity-50"></div>
           <div className="flex flex-col text-center gap-2 z-10">
-            <div className="text-title-xxl2 font-bold">
-              Selamat Datang Di Website Resmi P3K Bone Bolango
+            <div className="text-title-xxl2 font-bold w-5/6 m-auto">
+              Sistem Informasi Geografis Penyebaran Penyakit Tuberkulosis Kota
+              Gorontalo
             </div>
             <div className="text-lg font-medium w-2/3 m-auto">
-              Media informasi untuk masyarakat bone bolango dalam mengetahui
-              arsip lengkap dan jual beli produk umkm{" "}
+              Selamat Datang Di SIG Penyebaran Penyakit Tuberkulosis Pada Daerah
+              Kota Gorontalo. Sistem ini diharapkan dapat membantu masyarakat
+              dalam mengetahui angka kasus TBC dari tahun ke tahun di setiap
+              puskesmas yang ada di kota gorontalo
             </div>
           </div>
         </div>
