@@ -25,15 +25,9 @@ const menuGroups = [
         ],
       },
       {
-        icon: <ClipboardIcon />,
-        label: "Verifikasi",
-        route: "#",
-        children: [{ label: "Akun Pembeli", route: "/admin/verify/guests" }],
-      },
-      {
         icon: <DashboardIcon />,
-        label: "Kegiatan PKK",
-        route: "/admin/activities",
+        label: "K-Means Processing",
+        route: "/admin/kmeans",
       },
     ],
   },

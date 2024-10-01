@@ -8,6 +8,8 @@ interface TableProps {
   data: HealthCenter[];
 }
 
+const baseAPIUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+
 const MainTable: React.FC<TableProps> = ({ data }) => {
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -25,6 +27,9 @@ const MainTable: React.FC<TableProps> = ({ data }) => {
                   Nama
                 </th>
                 <th className=" px-4 py-4 font-medium text-black dark:text-white">
+                  Gambar
+                </th>
+                <th className=" px-4 py-4 font-medium text-black dark:text-white">
                   Waktu Ditambahkan
                 </th>
                 <th className="px-4 py-4 font-medium text-black dark:text-white">
@@ -37,6 +42,15 @@ const MainTable: React.FC<TableProps> = ({ data }) => {
                 <tr key={key}>
                   <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                     <p className="text-black dark:text-white">{item.name}</p>
+                  </td>
+                  <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                    <a
+                      target="_blank"
+                      href={`${baseAPIUrl}/files/health-centers/${item.image_name}`}
+                      className="text-sm text-white bg-primary px-2 py-1"
+                    >
+                      Lihat
+                    </a>
                   </td>
                   <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                     <p className="text-black dark:text-white">

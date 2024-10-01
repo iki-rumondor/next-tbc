@@ -3,7 +3,6 @@ import Input from "@/components/Forms/Input";
 import LayoutForm from "@/components/Forms/Layout";
 import Select from "@/components/Forms/Select";
 import BackArrowIcon from "@/components/Icons/BackArrowIcon";
-import Map from "@/components/Leaflet/Map";
 import get_data from "actions/get_data";
 import post_data from "actions/post_data";
 import { setOptions } from "leaflet";

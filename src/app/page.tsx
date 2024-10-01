@@ -1,33 +1,70 @@
 "use client";
-import Link from "next/link";
 import HomeHeader from "./(home_partials)/header";
-import { BlogCard } from "./(home_partials)/blog_card";
-import { ProductCard } from "./(home_partials)/product_card";
 import { useEffect, useState } from "react";
-import { Product } from "@/types/product";
-import { Activity } from "@/types/activity";
 import get_data from "actions/get_data";
 import toast from "react-hot-toast";
+import MapAllMarkers from "@/components/Leaflet/MapAllMarkers";
+import { HealthCenter } from "@/types/health_center";
+import CloseIcon from "@/components/Icons/CloseIcon";
+import Select from "@/components/Forms/Select";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectID, setSelectID] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [activities, setActivities] = useState<Activity[]>([]);
+  const [healthCenters, setHealthCenters] = useState<HealthCenter[]>([]);
+  const [data, setData] = useState<HealthCenter | null>(null);
+
+  const [category, setCategory] = useState("all");
+  const [year, setYear] = useState("2024");
+
+  const active =
+    "bg-primary px-4 py-1 text-white rounded-full transition duration-700 ease-in-out";
+  const inActive = "px-4 py-1 hover:text-primary";
 
   const handleOpen = () => {
     setOpen(true);
   };
 
+  const handleOpenModal = (uuid: string) => {
+    setOpenModal(true);
+    setSelectID(uuid);
+  };
+
+  const mapProps = {
+    healthCenters,
+    handleClick: handleOpenModal,
+  };
+
+  const yearProps = {
+    options: [
+      { value: "2024", name: "2024" },
+      { value: "2023", name: "2023" },
+    ],
+    handleChange: (e: any) => setYear(e.target.value),
+    label: "Pilih Tahun",
+    value: year,
+  };
+
   const handleLoad = async () => {
     try {
       setIsLoading(true);
-      const res1 = await get_data("", "/public/products?limit=8");
-      res1.data && setProducts(res1.data);
+      const res1 = await get_data("", "/health-centers");
+      res1.data && setHealthCenters(res1.data);
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-      const res2 = await get_data("", "/activities?limit=6");
-      res2.data && setActivities(res2.data);
+  const handleLoadDetail = async () => {
+    try {
+      setIsLoading(true);
+      const res1 = await get_data("", `/public/health-centers/${selectID}`);
+      res1.data && setHealthCenters(res1.data);
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -42,6 +79,10 @@ export default function Home() {
     }
     handleLoad();
   }, []);
+
+  useEffect(() => {
+    selectID && handleLoadDetail();
+  }, [selectID]);
 
   return (
     <div className="bg-white">
@@ -59,65 +100,97 @@ export default function Home() {
               Media informasi untuk masyarakat bone bolango dalam mengetahui
               arsip lengkap dan jual beli produk umkm{" "}
             </div>
-            {/* <div>
-              <Link
-                className="hover:bg-blue-700 bg-black px-5 py-2 inline-flex text-md mt-4 font-medium"
-                href={"/test"}
-              >
-                Login Pengguna
-              </Link>
-            </div> */}
           </div>
         </div>
       </div>
       <section className="p-10 mt-10">
-        <div className="text-center text-title-xl2 font-medium text-black mb-10">
-          Produk UMKM
+        <div className="mb-10">
+          <div className="inline-block">
+            <Select props={yearProps} />
+          </div>
+          <div className="text-title-lg text-center text-black-2 font-medium">
+            Peta Penyebaran Kasus TBC Di Kota Gorontalo {year}
+          </div>
+          <div className="flex justify-center gap-8 mt-4">
+            <button
+              onClick={() => setCategory("all")}
+              className={category == "all" ? active : inActive}
+            >
+              Seluruh
+            </button>
+            <button
+              onClick={() => setCategory("child")}
+              className={category == "child" ? active : inActive}
+            >
+              Anak-anak
+            </button>
+            <button
+              onClick={() => setCategory("adult")}
+              className={category == "adult" ? active : inActive}
+            >
+              Dewasa
+            </button>
+            <button
+              onClick={() => setCategory("male")}
+              className={category == "male" ? active : inActive}
+            >
+              Laki-laki
+            </button>
+            <button
+              onClick={() => setCategory("female")}
+              className={category == "female" ? active : inActive}
+            >
+              Perempuan
+            </button>
+          </div>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-4 sm:grid-cols-2 sm:gap-3 gap-0">
-          {products &&
-            products.map((item) => (
-              <ProductCard
-                props={{
-                  uuid: item.uuid,
-                  name: item.name,
-                  price: item.price,
-                  stock: item.stock,
-                  image_name: item.image_name,
-                  category: item.shop.category.name,
-                }}
-              />
-            ))}
-        </div>
-        <div className="w-full mt-10 text-center text-md bg-primary text-white py-2">
-          <Link href={"/products"} className="w-full block">
-            Selengkapnya..
-          </Link>
-        </div>
+        <MapAllMarkers props={mapProps} />
       </section>
-      <section className="p-10 mt-10">
-        <div className="text-center text-title-xl2 font-medium text-black mb-10">
-          Arsip Kegiatan
-        </div>
-        <div className="grid lg:grid-cols-3 sm:grid-cols-2 sm:gap-5">
-          {activities &&
-            activities.map((item) => (
-              <BlogCard
-                props={{
-                  uuid: item.uuid,
-                  title: item.title,
-                  description: item.description,
-                  image_name: item.image_name,
-                }}
+      {openModal && (
+        <div className="fixed w-full top-0 right-0 z-50 min-h-screen grid grid-cols-1 md:grid-cols-2">
+          <div className="inset-0 bg-black bg-opacity-50 md:block hidden"></div>
+          <div className="bg-white">
+            <div className="flex justify-between items-center p-5">
+              <div className="text-xl">Nama Puskesmas</div>
+              <button onClick={() => setOpenModal(false)}>
+                <CloseIcon />
+              </button>
+            </div>
+            <div className="relative w-full h-50 overflow-hidden">
+              <img
+                className="w-full absolute inset-1/2 -translate-x-1/2 -translate-y-1/2"
+                src={"/images/test-img.jpeg"}
+                // alt={`${props?.name}`}
               />
-            ))}
+            </div>
+            <div className="p-5 mb-3">
+              <div className="text-lg">
+                Cluster:{" "}
+                <span className="bg-primary text-white px-3 py-1 text-sm rounded-full">
+                  Rendah
+                </span>
+              </div>
+              <small>Clustering Berdasarkan Tahun</small>
+            </div>
+            <div className="max-h-40 overflow-y-scroll">
+              <div className="border-b border-stroke pb-2 flex justify-between px-4 text-black-2 text-sm font-medium">
+                <div>Tahun</div>
+                <div>Anak-anak</div>
+                <div>Dewasa</div>
+                <div>Laki-laki</div>
+                <div>Perempuan</div>
+              </div>
+              <div className="border-b border-stroke py-2 flex justify-between px-4 text-sm">
+                <div>Tahun</div>
+                <div>Anak-anak</div>
+                <div>Dewasa</div>
+                <div>Laki-laki</div>
+                <div>Perempuan</div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="w-full mt-10 text-center text-md bg-primary text-white py-2">
-          <Link href={"/activities"} className="w-full block">
-            Selengkapnya..
-          </Link>
-        </div>
-      </section>
+      )}
     </div>
   );
 }

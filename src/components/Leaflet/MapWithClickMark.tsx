@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -8,7 +8,7 @@ interface Props {
   setPosition: ({ lat, lng }: { lat: number; lng: number }) => void;
 }
 
-export default function Map({ props }: { props: Props }) {
+export default function MapWithClickMark({ props }: { props: Props }) {
   const markerIcon = new L.Icon({
     iconUrl:
       "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
@@ -20,7 +20,6 @@ export default function Map({ props }: { props: Props }) {
     shadowSize: [41, 41],
   });
 
-  // Fungsi untuk menangani klik pada map
   const MapClickHandler = () => {
     useMapEvents({
       click(e) {
@@ -36,7 +35,7 @@ export default function Map({ props }: { props: Props }) {
         className="h-80"
         center={[0.5514057167467522, 123.05040882691613]}
         zoom={13}
-        scrollWheelZoom={true}
+        scrollWheelZoom={false}
         style={{ zIndex: 1 }}
       >
         <MapClickHandler />
@@ -48,9 +47,7 @@ export default function Map({ props }: { props: Props }) {
           <Marker
             position={[props.position.lat, props.position.lng]}
             icon={markerIcon}
-          >
-            {/* Optionally, you can include a Popup component here for more info */}
-          </Marker>
+          />
         )}
       </MapContainer>
     </div>

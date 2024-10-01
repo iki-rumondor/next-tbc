@@ -6,7 +6,7 @@ interface SelectProps {
   label: string;
   options?: Array<{ name: string; value: any }>;
   value: string;
-  name: string;
+  name?: string;
   handleChange: (e: any) => void;
 }
 

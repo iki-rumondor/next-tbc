@@ -1,9 +1,10 @@
 "use client";
 import Input from "@/components/Forms/Input";
 import LayoutForm from "@/components/Forms/Layout";
+import Upload from "@/components/Forms/Upload";
 import BackArrowIcon from "@/components/Icons/BackArrowIcon";
 import DeleteIcon from "@/components/Icons/DeleteIcon";
-import Map from "@/components/Leaflet/Map";
+import MapWithClickMark from "@/components/Leaflet/MapWithClickMark";
 import Loader from "@/components/Loader";
 import DeleteModal from "@/components/Modal/DeleteModal";
 import get_data from "actions/get_data";
@@ -22,6 +23,11 @@ interface Position {
   lng: number;
 }
 
+const convertToMB = (bytes: number) => {
+  const size = (bytes / (1024 * 1024)).toFixed(2);
+  return `${size} MB`;
+};
+
 export default function page({ params }: { params: { uuid: string } }) {
   const config = {
     back_url: "../health-centers",
@@ -35,10 +41,15 @@ export default function page({ params }: { params: { uuid: string } }) {
   const [values, setValues] = useState(defaultValue);
   const [isLoading, setIsLoading] = useState(false);
   const [position, setPosition] = useState<Position | null>(null);
+  const [file, setFile] = useState<any | null>(null);
   const router = useRouter();
 
   const handleChange = (e: any) => {
     setValues({ ...values, [e.target.name]: e.target.value });
+  };
+
+  const handleChangeFile = (e: any) => {
+    e.target.files && setFile(e.target.files[0]);
   };
 
   const mapProps = {
@@ -72,6 +83,12 @@ export default function page({ params }: { params: { uuid: string } }) {
     value: position?.lat,
   };
 
+  const uploadProps = {
+    primary: "File Harus Dalam Format Gambar",
+    secondary: "(Ukuran Max: 1MB)",
+    handleChange: handleChangeFile,
+  };
+
   const handleLoad = async () => {
     const token = localStorage.getItem("token") || "";
     try {
@@ -91,14 +108,23 @@ export default function page({ params }: { params: { uuid: string } }) {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const token = localStorage.getItem("token") || "";
-    const data = {
-      name: values.name,
-      longitude: position?.lng,
-      latitude: position?.lat,
-    };
+    const data = new FormData();
+    data.append("name", values.name);
+    data.append("file", file);
+    if (position) {
+      data.append("longitude", position.lng.toString());
+      data.append("latitude", position.lat.toString());
+    }
+
     try {
       setIsLoading(true);
-      const response = await post_data(token, config.default_api, "PUT", data);
+      const response = await post_data(
+        token,
+        config.default_api,
+        "PUT",
+        data,
+        true
+      );
       toast.success(response.message);
       router.push(config.back_push);
     } catch (error: any) {
@@ -166,16 +192,40 @@ export default function page({ params }: { params: { uuid: string } }) {
         title={config.title_form}
       >
         <Input props={nameProps} />
+
         <div className="w-full mb-5">
           <div className="mb-3 block text-sm font-medium text-black dark:text-white">
             Pilih Lokasi
           </div>
-          <Map props={mapProps} />
+          <MapWithClickMark props={mapProps} />
         </div>
         <div className="grid md:grid-cols-2 md:gap-2">
           <Input props={longProps} />
           <Input props={latProps} />
         </div>
+
+        {file ? (
+          <div className="mb-4.5">
+            <p>Nama File : {file.name}</p>
+            <p>Ukuran : {convertToMB(file.size)}</p>
+            <button
+              onClick={() => setFile(null)}
+              className="inline-flex items-center justify-center gap-1.5 font-small bg-rose-500 text-white px-2 py-1 rounded-md mt-2 hover:bg-rose-600"
+            >
+              <span>
+                <DeleteIcon />
+              </span>
+              Hapus
+            </button>
+          </div>
+        ) : (
+          <div className="mb-4.5">
+            <div className="mb-2 block text-sm font-medium text-black dark:text-white">
+              Pilih Gambar
+            </div>
+            <Upload props={uploadProps} />
+          </div>
+        )}
       </LayoutForm>
 
       {open && <DeleteModal props={deleteProps} />}
