@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactElement, useEffect, useRef, useState } from "react";
+import React, { ReactElement } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import SidebarItem from "@/components/Sidebar/SidebarItem";
@@ -38,9 +38,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, menuGroups }: SidebarProps) => {
         <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
           <Link href="/">
             <Image
-              width={120}
+              width={170}
               height={1}
-              src={"/images/logo/logo-simpel.png"}
+              src={"/images/logo/logo-tbc-light.png"}
               alt="Logo"
               priority
             />
