@@ -29,6 +29,10 @@ export default function page() {
       redirect("/admin/dashboard");
     }
 
+    if (decodeToken.role == "KADIS") {
+      redirect("/head/dashboard");
+    }
+
     localStorage.clear();
     redirect("/auth/login");
   }, []);
