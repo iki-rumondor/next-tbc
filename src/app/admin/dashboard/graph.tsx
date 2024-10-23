@@ -53,8 +53,6 @@ export default function MainGraph() {
       setIsLoading(true);
       const resp = await get_data(token, "/dashboards/admin");
       setValue(resp.data);
-      console.log(resp);
-      
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -67,12 +65,16 @@ export default function MainGraph() {
   }, []);
 
   return (
-    <ReactApexChart
-      options={options}
-      series={series}
-      type="line"
-      height={350}
-      width={"100%"}
-    />
+    <>
+      {value.total_cases && (
+        <ReactApexChart
+          options={options}
+          series={series}
+          type="line"
+          height={350}
+          width={"100%"}
+        />
+      )}
+    </>
   );
 }

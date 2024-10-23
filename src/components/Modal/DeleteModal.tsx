@@ -7,7 +7,7 @@ interface Props {
 
 export default function DeleteModal({ props }: { props: Props }) {
   return (
-    <>
+    <div className="absolute z-999">
       <div
         className="fixed inset-0 bg-neutral-500 bg-opacity-75 transition-opacity"
         aria-hidden="true"
@@ -81,6 +81,6 @@ export default function DeleteModal({ props }: { props: Props }) {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -145,12 +145,13 @@ export default function page({ params }: { params: { uuid: string } }) {
       toast.error(error.message);
     } finally {
       setIsLoading(false);
+      setOpen(false);
     }
   };
 
   const deleteProps = {
     title:
-      "Setelah menghapus kategori tersebut, seluruh umkm dengan kategori tersebut akan dihapus juga",
+      "Setelah menghapus puskesmas tersebut, seluruh data kasus dari puskesmas tersebut akan dihapus juga",
     toggleModal: () => setOpen(!open),
     handleSubmit: handleDelete,
     isLoading: isLoading,

@@ -6,6 +6,16 @@ import get_data from "actions/get_data";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
+interface Option {
+  name: string;
+  value: string;
+}
+
+function getNameFromValue(options: Option[], value: string): string {
+  const option = options.find((option) => option.value === value);
+  return option ? option.name : "";
+}
+
 export default function Page() {
   const [healthCenters, setHealthCenters] = useState([]);
   const [select, setSelect] = useState("");
@@ -19,7 +29,8 @@ export default function Page() {
   };
 
   const handleClick = () => {
-    const url = `/reports/cases/?puskes_id=${select}`;
+    const name = getNameFromValue(healthCenters, select);
+    const url = `/reports/cases/?puskes_id=${select}&puskes_name=${name}`;
     window.open(url, "_blank");
   };
 
@@ -48,7 +59,7 @@ export default function Page() {
   }, []);
 
   return (
-    <BasicCard title="Laporan Akun Marketplace">
+    <BasicCard title="Laporan Kasus Per Puskesmas">
       <div className="p-5">
         <Select props={healthCenterProps} />
         <button

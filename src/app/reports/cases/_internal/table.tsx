@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 export default function CasesReportTable() {
   const searchParams = useSearchParams();
   let puskesID = searchParams.get("puskes_id");
+  let puskesName = searchParams.get("puskes_name");
   if (puskesID == null) {
     puskesID = "";
   }
@@ -32,7 +33,7 @@ export default function CasesReportTable() {
   return (
     <>
       <div className="font-semibold text-title-lg mb-3 text-black-2">
-        Laporan Kasus Puskesmas
+        Laporan Kasus Puskesmas {puskesName}
       </div>
 
       <table className="w-full table-auto">
@@ -49,9 +50,7 @@ export default function CasesReportTable() {
             <th className="border px-2 py-1 font-medium text-black">
               Perempuan
             </th>
-            <th className="border px-2 py-1 font-medium text-black">
-              Total
-            </th>
+            <th className="border px-2 py-1 font-medium text-black">Total</th>
           </tr>
         </thead>
         <tbody>
